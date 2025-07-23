@@ -33,6 +33,8 @@ runs:
         EOF
         fi
 
+        cat ~/.m2/settings.xml;
+
     - name: Set up JBang
       uses: jbangdev/setup-jbang@main
 
