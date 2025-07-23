@@ -51,6 +51,6 @@ runs:
       run: jbang --java 21 --fresh --repos 'streamx-connector-github=https://maven.pkg.github.com/rafal-glowacz-ds/streamx-connector-github/' --repos 'mavencentral' dev.streamx.githhub:streamx-connector-github:0.0.1-SNAPSHOT
       shell: bash
       env:
-        JSON_INPUTS: ${{ toJSON(inputs) }}
-        GITHUB_ACTOR: 'rafal-glowacz-ds'
-        GITHUB_TOKEN: ${{ inputs.github-token }}
+#         JSON_INPUTS: ${{ toJSON(inputs) }}
+        GITHUB_ACTOR: ${{ secrets.ACTION_GITHUB_ACTOR }}
+        GITHUB_TOKEN: ${{ secrets.ACTION_GITHUB_TOKEN }}
