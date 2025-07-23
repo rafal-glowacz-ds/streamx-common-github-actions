@@ -26,7 +26,7 @@ runs:
             <server>
               <id>streamx-connector-github</id>
               <username>${env.GITHUB_ACTOR}</username>
-              <password>${env.GITHUB_TOKEN}</password>
+              <password>${env.RG_GITHUB_TOKEN}</password>
             </server>
           </servers>
         </settings>
@@ -45,4 +45,4 @@ runs:
       env:
         JSON_INPUTS: ${{ toJSON(inputs) }}
         GITHUB_ACTOR: 'rafal-glowacz-ds'
-        GITHUB_TOKEN: ${{ inputs.github-token }}
+        RG_GITHUB_TOKEN: ${{ inputs.github-token }}
