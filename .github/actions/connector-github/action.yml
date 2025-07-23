@@ -12,6 +12,10 @@ runs:
   steps:
     - name: Output Inputs
       shell: bash
+      run: echo "${{ toJSON(inputs) }}"
+
+    - name: Output Event Inputs
+      shell: bash
       run: echo "${{ toJSON(github.event.inputs) }}"
 
     - name: Inject streamx-connector-github repository credentials
