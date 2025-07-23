@@ -12,6 +12,9 @@ runs:
   steps:
     - name: Inject streamx-connector-github repository credentials
       shell: bash
+      env:
+        GITHUB_ACTOR: 'rafal-glowacz-ds'
+        GITHUB_TOKEN: ${{ inputs.github-token }}
       run: |
         if [ -f ~/.m2/settings.xml ]; then
           if ! grep -q '<id>streamx-connector-github</id>' ~/.m2/settings.xml; then
