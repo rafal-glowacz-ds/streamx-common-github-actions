@@ -40,7 +40,7 @@ runs:
 
     - name: Run the action
       id: action
-      run: jbang --java 21 --fresh --repos 'streamx-connector-github=https://maven.pkg.github.com/rafal-glowacz-ds/streamx-connector-github/' --repos 'mavencentral' dev.streamx.githhub:streamx-connector-github:0.0.1-SNAPSHOT
+      run: jbang --java 21 --verbose --fresh --repos 'streamx-connector-github=https://maven.pkg.github.com/rafal-glowacz-ds/streamx-connector-github/' --repos 'mavencentral' dev.streamx.githhub:streamx-connector-github:0.0.1-SNAPSHOT
       shell: bash
       env:
         JSON_INPUTS: ${{ toJSON(inputs) }}
