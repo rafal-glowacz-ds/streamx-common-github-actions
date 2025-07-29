@@ -3,6 +3,12 @@ inputs:
   github-token:
     description: 'GitHub token - remove when public access granted'
     required: true
+  streamx-ingestion-url:
+    description: 'StreamX ingestion api endpoint URL'
+    required: true
+  streamx-ingestion-token:
+    description: 'StreamX ingestion api authorisation token'
+    required: false
   action:
     description: 'Name of the GH action'
     required: true
@@ -16,7 +22,7 @@ inputs:
     description: 'Root directory for ingestion data lookup. Default value is github.workspace'
     required: false
   type:
-    description: 'Metadata sx:type property, included in ingestion message properties.'
+    description: 'Metadata sx:type property, included in ingestion message properties'
     required: false
   include-patterns:
     description: 'Ant pattern configurations for filtering ingestion data ie: ["styles/*.css", "scripts/*.js"]'
