@@ -65,7 +65,7 @@ runs:
     - name: Run the action
       id: action
       run: |
-        if [[ "${{ inputs.debug }}" == "true" ]]; then
+        if [[ "${{ inputs.debug-enabled }}" == "true" ]]; then
           echo $'Inputs:\n{{ toJSON(inputs) }}'
           echo $'Event Inputs:\n{{ toJSON(github.event.inputs) }}'
 
