@@ -4,42 +4,38 @@ inputs:
     description: 'GitHub token - remove when public access granted'
     required: true
   streamx-ingestion-url:
-    description: 'StreamX ingestion api endpoint URL'
+    description: 'StreamX ingestion api endpoint URL (e.g., https://ingestion.streamx.dev).'
     required: true
   streamx-ingestion-token:
-    description: 'StreamX ingestion api authorisation token'
+    description: 'StreamX ingestion api authorisation token.'
     required: false
   action:
-    description: 'Name of the GH action'
+    description: 'Name of the GH action (e.g., sync, publish, unpublish).'
     required: true
   channel:
-    description: 'Name of the StreamX ingestion channel'
+    description: 'Name of the StreamX ingestion channel.'
     required: true
   source-provider:
-    description: 'Name of the provider, used for selecting ingestion data'
+    description: 'Specifies the provider name used to determine the ingestion data source.'
     required: false
   workspace:
-    description: 'Root directory for ingestion data lookup. Default value is github.workspace'
+    description: 'Specifies the root directory for ingestion data lookup. Defaults to github.workspace.'
     required: false
   type:
-    description: 'Metadata sx:type property, included in ingestion message properties'
+    description: 'Specifies the sx:type metadata field within the ingestion message properties.'
     required: false
   include-patterns:
-    description: 'Ant pattern configurations for filtering ingestion data ie: ["styles/*.css", "scripts/*.js"]'
+    description: 'Defines Ant-style path patterns for filtering ingestion data (e.g., styles/*.css, scripts/*.js).'
     required: false
+  debug-enabled:
+    description: 'Configuration property to enable debug log level in GitHub Actions.'
+    required: false
+    default: 'false'
 
 
 runs:
   using: "composite"
   steps:
-    - name: Output Inputs
-      shell: bash
-      run: echo "${{ toJSON(inputs) }}"
-
-    - name: Output Event Inputs
-      shell: bash
-      run: echo "${{ toJSON(github.event.inputs) }}"
-
     - name: Inject streamx-connector-github repository credentials
       shell: bash
       run: |
@@ -63,14 +59,19 @@ runs:
         EOF
         fi
 
-        cat ~/.m2/settings.xml;
-
     - name: Set up JBang
       uses: jbangdev/setup-jbang@main
 
     - name: Run the action
       id: action
-      run: jbang --java 21 --fresh --repos 'streamx-connector-github=https://maven.pkg.github.com/rafal-glowacz-ds/streamx-connector-github/' --repos 'mavencentral' dev.streamx.githhub:streamx-connector-github:0.0.1-SNAPSHOT
+      run: |
+        if [[ "${{ inputs.debug }}" == "true" ]]; then
+          echo $'Inputs:\n{{ toJSON(inputs) }}'
+          echo $'Event Inputs:\n{{ toJSON(github.event.inputs) }}'
+
+          export JBANG_JAVA_OPTIONS="-Dquarkus.log.category.\"dev.streamx\".level=DEBUG"
+        fi
+        jbang --java 21 --fresh --repos 'streamx-connector-github=https://maven.pkg.github.com/rafal-glowacz-ds/streamx-connector-github/' --repos 'mavencentral' dev.streamx.githhub:streamx-connector-github:0.0.1-SNAPSHOT
       shell: bash
       env:
         JSON_INPUTS: ${{ toJSON(inputs) }}
