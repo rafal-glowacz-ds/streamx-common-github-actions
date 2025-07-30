@@ -68,7 +68,7 @@ runs:
         if [[ "${{ inputs.debug-enabled }}" == "true" ]]; then
           echo $'Inputs:\n{{ toJSON(inputs) }}'
           echo $'Event Inputs:\n{{ toJSON(github.event.inputs) }}'
-          export JDK_JAVA_OPTIONS="-Dquarkus.log.category.\\"dev.streamx\\".level=DEBUG"
+          export JDK_JAVA_OPTIONS="-Dquarkus.log.category.\'dev.streamx\'.level=DEBUG"
         fi
         jbang --java 21 --fresh --repos 'streamx-connector-github=https://maven.pkg.github.com/rafal-glowacz-ds/streamx-connector-github/' --repos 'mavencentral' dev.streamx.githhub:streamx-connector-github:0.0.1-SNAPSHOT
       shell: bash
