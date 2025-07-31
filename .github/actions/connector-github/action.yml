@@ -38,9 +38,6 @@ inputs:
     description: 'StreamX artifactory token for SNAPSHOT usage only'
     required: false
 
-
-
-
 runs:
   using: "composite"
   env:
