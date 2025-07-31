@@ -1,8 +1,5 @@
 name: 'streamx-connector-github'
 inputs:
-  github-token:
-    description: 'GitHub token - remove when public access granted'
-    required: true
   streamx-ingestion-url:
     description: 'StreamX ingestion API endpoint URL (e.g., https://ingestion.streamx.dev).'
     required: true
@@ -37,33 +34,18 @@ inputs:
     description: 'Configuration property to enable debug log level in GitHub Actions.'
     required: false
     default: 'false'
-
+  snapshot_artifactory_token:
+    description: 'StreamX artifactory token for SNAPSHOT usage only'
+    required: false
 
 runs:
   using: "composite"
   steps:
-    - name: Inject streamx-connector-github repository credentials
-      shell: bash
-      run: |
-        if [ -f ~/.m2/settings.xml ]; then
-          if ! grep -q '<id>streamx-connector-github</id>' ~/.m2/settings.xml; then
-            sed -i.bak 's@</servers>@<server><id>streamx-connector-github</id><username>${env.GITHUB_ACTOR}</username><password>${env.GITHUB_TOKEN}</password></server></servers>@' ~/.m2/settings.xml
-          fi
-        else
-          mkdir -p ~/.m2/
-          cat <<\EOF > ~/.m2/settings.xml
-        <?xml version="1.0"?>
-        <settings>
-          <servers>
-            <server>
-              <id>streamx-connector-github</id>
-              <username>${env.GITHUB_ACTOR}</username>
-              <password>${env.GITHUB_TOKEN}</password>
-            </server>
-          </servers>
-        </settings>
-        EOF
-        fi
+    - name: Artifactory authorisation
+      if: inputs.snapshot_artifactory_token != ''
+      uses: 'google-github-actions/auth@v2'
+      with:
+        credentials_json: ${{ inputs.snapshot_artifactory_token }}
 
     - name: Set up JBang
       uses: jbangdev/setup-jbang@main
@@ -76,9 +58,7 @@ runs:
           echo $'Event Inputs:\n${{ toJSON(github.event.inputs) }}'
           export JDK_JAVA_OPTIONS="-Dquarkus.profile=debug"
         fi
-        jbang --java 21 --fresh --repos 'streamx-connector-github=https://maven.pkg.github.com/rafal-glowacz-ds/streamx-connector-github/' --repos 'mavencentral' dev.streamx.githhub:streamx-connector-github:0.0.1-SNAPSHOT
+        jbang --java 21 --fresh --repos 'streamx-maven-public-releases=https:://europe-west1-maven.pkg.dev/streamx-releases/streamx-maven-public-releases/' --repos 'mavencentral' --repos 'streamx-maven-snapshot=artifactregistry://europe-west1-maven.pkg.dev/streamx-releases/streamx-maven-snapshots/' dev.streamx.githhub:streamx-connector-github:0.0.1-SNAPSHOT
       shell: bash
       env:
         JSON_INPUTS: ${{ toJSON(inputs) }}
-        GITHUB_ACTOR: 'rafal-glowacz-ds'
-        GITHUB_TOKEN: ${{ inputs.github-token }}
